@@ -1,5 +1,7 @@
 public interface Thing{
-  int[] getBoundingBox()
-  void draw(Graphics page)
-  void act()
+  int[] getBoundingBox();
+  void draw(Graphics page);
+  void act();
+  int getX();
+  int getY();
 }

@@ -1,5 +1,5 @@
 public interface Thing{
   int[] getBoundingBox()
-  void draw()
+  void draw(Graphics page)
   void act()
 }

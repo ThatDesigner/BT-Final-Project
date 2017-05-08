@@ -1,3 +1,6 @@
 public interface Thing{
-
+  int[] getBoundingBox()
+  void killSelf()
+  void draw()
+  void act()
 }

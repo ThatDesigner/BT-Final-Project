@@ -1,0 +1,25 @@
+public class Player implements Thing{
+  
+  private int x;
+  private int y;
+  private int width;
+  private int height;
+  
+  public Player(int x, int y, int w, int h){
+    this.x=x;
+    this.y=y;
+    this.width = w;
+    this.height = h;
+  }
+  
+  public int[] boundingBox(){
+    return new int[]{x-width/2, y+height/2, x+width/2, y-height/2}
+  }
+  
+  public void draw(){
+  }
+  
+  public void act(){
+  }
+  
+}

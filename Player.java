@@ -1,7 +1,10 @@
 import java.awt.*;
 
 public class Player extends Thing {
+	
 	private String command;
+
+	private boolean left, right;
 	
 	public Player(int x, int y, int w, int h) {
 		super(x, y, w, h);
@@ -14,12 +17,18 @@ public class Player extends Thing {
 	}
 
 	public void act() {
-		if (!(command.equals("stay"))) {
-			if (command.equals("moveRight"))
-				super.changeX(5);
-			else if (command.equals("moveLeft"))
-				super.changeX(-5);
-		}
+		System.out.println("X = " + super.getX());
+		
+			if (command.equals("moveRight")&& super.getX() < Driver.WIDTH - super.getWidth()) {
+				super.setVX(5);
+				super.changeX(super.getVX());
+			} else if (command.equals("moveLeft")&& super.getX() > 0) {
+				super.setVX(-5);
+				super.changeX(super.getVX());
+			} else if (command.equals("stay")) {
+				super.setVX(0);
+			}
+			
 
 	}
 

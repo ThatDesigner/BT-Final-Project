@@ -3,11 +3,14 @@ import java.awt.*;
 public class Enemy extends Thing {
 
 	private String command;
-	private boolean movingRight = true;
-	
-	public Enemy(int x, int y, int w, int h) {
+	private int row;
+	private int col;
+
+	public Enemy(int x, int y, int w, int h, int r, int c) {
 		super(x, y, w, h);
-		command = super.getCommand();
+		row = r;
+		col = c;
+		command = "right";
 	}
 
 	public void draw(Graphics page) {
@@ -16,18 +19,28 @@ public class Enemy extends Thing {
 	}
 
 	public void act() {
-		move();
+		System.out.println(command);
+		int speed = 5;
+		if (command.equals("right"))
+			super.setVX(speed);
+		else if (command.equals("left"))
+			super.setVX(-speed);
+		changeX(super.getVX());
 	}
 
 	public void setAct(String command) {
 		this.command = command;
 	}
 	
-	public void move(){
-		if(movingRight)
-			super.setVX(3);
-		else
-			super.setVX(-3);
+	public int getCol(){
+		return col;
+	}
+	public int getRow(){
+		return row;
+	}
+
+	public void moveDown() {
+		this.changeY(getHeight());
 	}
 
 }

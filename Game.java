@@ -51,6 +51,7 @@ public class Game extends JPanel implements KeyListener {
 				for (Cover cover : covers) {
 					cover.act();
 				}
+				checkCover();
 				Thread.sleep(20);// pause for 200 milliseconds
 			} catch (InterruptedException ex) {
 			}
@@ -156,5 +157,13 @@ public class Game extends JPanel implements KeyListener {
 		boolean h1 = bb2[0] > bb1[0] && bb2[0] < bb1[2];
 		boolean h2 = bb2[2] > bb1[0] && bb2[2] < bb1[2];
 		return (v1 || v2) && (h1 || h2);
+	}
+	
+	public void checkCover(){
+		for(int i = 0; i < covers.size(); i++){
+			if(covers.get(i).getHealth() <= 0){
+				covers.remove(i);	
+			}
+		}
 	}
 }

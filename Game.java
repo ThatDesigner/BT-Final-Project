@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements KeyListener {
 	private Player player;
-	private ArrayList<Enemy> enemies;
+	private ArrayList<ArrayList<Enemy>> enemies;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Cover> covers;
 
@@ -66,8 +66,9 @@ public class Game extends JPanel implements KeyListener {
 	public void paintComponent(Graphics page) {
 		super.paintComponent(page);// I'll tell you later.
 		player.draw(page);// calls the draw method in the Player class
-		for (Enemy ship : enemies) {
-			ship.draw(page);
+		for (ArrayList<Enemy> row : enemies) {
+			for (Enemy ship : row)
+				ship.draw(page);
 		}
 		for (Bullet booom : bullets) {
 			booom.draw(page);
@@ -79,14 +80,14 @@ public class Game extends JPanel implements KeyListener {
 
 	// not used but must be present
 	public void keyReleased(KeyEvent event) {
-//		player.setAct("stay");
+		// player.setAct("stay");
 		// event.
 
 		if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.setAct("stay");
+			player.moveRight(false);
 		}
 		if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.setAct("stay");
+			player.moveLeft(false);
 		}
 
 	}
@@ -94,10 +95,10 @@ public class Game extends JPanel implements KeyListener {
 	// tells the program what to do when keys are pressed
 	public void keyPressed(KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.setAct("moveRight");
+			player.moveRight(true);
 		}
 		if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.setAct("moveLeft");
+			player.moveLeft(true);
 		}
 
 	}
@@ -107,43 +108,74 @@ public class Game extends JPanel implements KeyListener {
 
 	}
 
-	public void moveEnemies(ArrayList<Enemy> enemy) {
-		int highCol = -1;
-		int lowCol = 11;
-		int highRow = 0;
-		String command = "right";
-		boolean down = false;
+	public void moveEnemies(ArrayList<ArrayList<Enemy>> enemies) {
+		if (enemies.get(0).get(0).getCommand().equals("right")) {
+			int highCol = -1;
+			int highRow = -1;
+			for (ArrayList<Enemy> row : enemies) {
+				for (Enemy ship : row) {
+					if (ship.getCol() > highCol) {
+						highCol = ship.getCol();
+						highRow = ship.getRow();
+					}
+				}
+			}
+			Enemy high = enemies.get(highRow).get(highCol);
+			if (high.getX() + high.getWidth() >= Driver.WIDTH) {
+				for (ArrayList<Enemy> row : enemies) {
+					for (Enemy ship : row) {
+						ship.setCommand("left");
+						ship.moveDown();
+					}
+				}
+			}
+		} else {
+			int lowCol = 100;
+			int lowRow = 100;
+			for (ArrayList<Enemy> row : enemies) {
+				for (Enemy ship : row) {
+					if (ship.getCol() < lowCol) {
+						lowCol = ship.getCol();
+						lowRow = ship.getRow();
+					}
+				}
+			}
+			Enemy high = enemies.get(lowRow).get(lowCol);
+			if (high.getX() <= 0) {
+				for (ArrayList<Enemy> row : enemies) {
+					for (Enemy ship : row) {
+						ship.setCommand("right");
+						ship.moveDown();
+					}
+				}
+			}
 
-		int lowRow = 100;
-		for (Enemy ship : enemies) {
-			if (ship.getCol() > highCol) {
-				highCol = ship.getCol();
-				highRow = ship.getRow();
-			}
-			if (ship.getCol() < lowCol) {
-				lowCol = ship.getCol();
-				lowRow = ship.getRow();
-			}
 		}
-		if (enemies.get(highCol * highRow + highCol).getX() == Driver.WIDTH) {
-
+		
+		for (ArrayList<Enemy> row : enemies) {
+			for (Enemy ship : row) {
+				ship.act();
+				
+			}
 		}
 	}
 
-	public ArrayList<Enemy> spawnEnemies() {
-		ArrayList<Enemy> enemies = new ArrayList<Enemy>(55);// 11x5
+	public ArrayList<ArrayList<Enemy>> spawnEnemies() {
+		ArrayList<ArrayList<Enemy>> enemies = new ArrayList<ArrayList<Enemy>>();// 11x5
 		int xLoc = 1;
 		int yLoc = 0;
-		int width = 30;
+		int width = 40;
 		int height = width;
 
 		for (int row = 0; row < 5; row++) {
+			ArrayList<Enemy> newLine = new ArrayList<Enemy>(11);
 			for (int col = 0; col < 11; col++) {
-				enemies.add(new Enemy(xLoc, yLoc, width, height, row, col));
-				xLoc += width + 10;
+				newLine.add(new Enemy(xLoc, yLoc, width, height, row, col));
+				xLoc += width + 7;
 				// System.out.println(enemies.get());
 			}
-			yLoc += height + 10;
+			enemies.add(newLine);
+			yLoc += height + 7;
 			xLoc = 1;
 		}
 		return enemies;

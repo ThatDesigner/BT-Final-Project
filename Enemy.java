@@ -2,7 +2,6 @@ import java.awt.*;
 
 public class Enemy extends Thing {
 
-	private String command;
 	private int row;
 	private int col;
 
@@ -10,32 +9,30 @@ public class Enemy extends Thing {
 		super(x, y, w, h);
 		row = r;
 		col = c;
-		command = "right";
+		setCommand("right");
 	}
 
 	public void draw(Graphics page) {
 		page.setColor(Color.RED);
 		page.fillRect(super.getX(), super.getY(), super.getWidth(), super.getHeight());
+		
 	}
 
 	public void act() {
-		System.out.println(command);
-		int speed = 5;
-		if (command.equals("right"))
+		System.out.println(getCommand());
+		int speed = 50;
+		if (getCommand().equals("right"))
 			super.setVX(speed);
-		else if (command.equals("left"))
+		else if (getCommand().equals("left"))
 			super.setVX(-speed);
 		changeX(super.getVX());
 	}
 
-	public void setAct(String command) {
-		this.command = command;
-	}
-	
-	public int getCol(){
+	public int getCol() {
 		return col;
 	}
-	public int getRow(){
+
+	public int getRow() {
 		return row;
 	}
 

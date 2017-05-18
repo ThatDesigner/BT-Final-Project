@@ -52,6 +52,7 @@ public class Game extends JPanel implements KeyListener {
 					cover.act();
 				}
 				checkCover();
+				checkBullets();
 				Thread.sleep(20);// pause for 200 milliseconds
 			} catch (InterruptedException ex) {
 			}
@@ -216,6 +217,16 @@ public class Game extends JPanel implements KeyListener {
 			if (covers.get(i).getHealth() <= 0) {
 				covers.remove(i);
 			}
+		}
+	}
+	
+	public void checkBullets(){
+		for(int i = 0; i < bullets.size(); i++){
+			int yValue = bullets.get(i).getY();
+			if(yValue <= 0 || yValue >= height){
+				bullets.remove(i);	
+			}
+			
 		}
 	}
 }

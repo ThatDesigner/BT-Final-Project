@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements KeyListener {
 	private Player player;
-	private ArrayList<ArrayList<Enemy>> enemies;
+	private Enemy[][] enemies;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Cover> covers;
 
@@ -40,7 +40,7 @@ public class Game extends JPanel implements KeyListener {
 			try {
 				player.act(); // calls the act method in the Player class
 
-				if (enemyTimer == 25) {
+				if (enemyTimer == time()) {
 					moveEnemies(enemies);
 					enemyTimer = 0;
 				}
@@ -52,8 +52,6 @@ public class Game extends JPanel implements KeyListener {
 					cover.act();
 				}
 				checkCover();
-				checkBullets();
-				
 				Thread.sleep(20);// pause for 200 milliseconds
 			} catch (InterruptedException ex) {
 			}
@@ -68,7 +66,7 @@ public class Game extends JPanel implements KeyListener {
 	public void paintComponent(Graphics page) {
 		super.paintComponent(page);// I'll tell you later.
 		player.draw(page);// calls the draw method in the Player class
-		for (ArrayList<Enemy> row : enemies) {
+		for (Enemy[] row : enemies) {
 			for (Enemy ship : row)
 				ship.draw(page);
 		}
@@ -102,9 +100,6 @@ public class Game extends JPanel implements KeyListener {
 		if (event.getKeyCode() == KeyEvent.VK_LEFT) {
 			player.moveLeft(true);
 		}
-		if(event.getKeyCode() == KeyEvent.VK_SPACE){
-			bullets.add(new Bullet(player.getX()+19, player.getY()-17, 90));	
-		}
 
 	}
 
@@ -113,11 +108,34 @@ public class Game extends JPanel implements KeyListener {
 
 	}
 
-	public void moveEnemies(ArrayList<ArrayList<Enemy>> enemies) {
-		if (enemies.get(0).get(0).getCommand().equals("right")) {
+	public int time() {
+		int sizes = 0;
+		for (Enemy[] r : enemies) {
+			for (Enemy badBoi : r)
+				if (badBoi != null)
+					sizes++;
+		}
+
+		return sizes;
+	}
+
+	private String getMoveSide() {
+
+		for (int i = 0; i < enemies.length; i++) {
+			for (int j = 0; j < enemies.length; j++) {
+				if (enemies[i][j] != null)
+					return enemies[i][j].getCommand();
+			}
+		}
+		return "empty";
+	}
+
+	public void moveEnemies(Enemy[][] enemies) {
+		if (getMoveSide().equals("right")) {
 			int highCol = -1;
 			int highRow = -1;
-			for (ArrayList<Enemy> row : enemies) {
+
+			for (Enemy[] row : enemies) {
 				for (Enemy ship : row) {
 					if (ship.getCol() > highCol) {
 						highCol = ship.getCol();
@@ -125,19 +143,19 @@ public class Game extends JPanel implements KeyListener {
 					}
 				}
 			}
-			Enemy high = enemies.get(highRow).get(highCol);
+			Enemy high = enemies[highRow][highCol];
 			if (high.getX() + high.getWidth() >= Driver.WIDTH) {
-				for (ArrayList<Enemy> row : enemies) {
+				for (Enemy[] row : enemies) {
 					for (Enemy ship : row) {
 						ship.setCommand("left");
 						ship.moveDown();
 					}
 				}
 			}
-		} else {
+		} else if (getMoveSide().equals("left")) {
 			int lowCol = 100;
 			int lowRow = 100;
-			for (ArrayList<Enemy> row : enemies) {
+			for (Enemy[] row : enemies) {
 				for (Enemy ship : row) {
 					if (ship.getCol() < lowCol) {
 						lowCol = ship.getCol();
@@ -145,9 +163,9 @@ public class Game extends JPanel implements KeyListener {
 					}
 				}
 			}
-			Enemy high = enemies.get(lowRow).get(lowCol);
+			Enemy high = enemies[lowRow][lowCol];
 			if (high.getX() <= 0) {
-				for (ArrayList<Enemy> row : enemies) {
+				for (Enemy[] row : enemies) {
 					for (Enemy ship : row) {
 						ship.setCommand("right");
 						ship.moveDown();
@@ -156,31 +174,28 @@ public class Game extends JPanel implements KeyListener {
 			}
 
 		}
-		
-		for (ArrayList<Enemy> row : enemies) {
+
+		for (Enemy[] row : enemies) {
 			for (Enemy ship : row) {
 				ship.act();
-				
+
 			}
 		}
 	}
 
-	public ArrayList<ArrayList<Enemy>> spawnEnemies() {
-		ArrayList<ArrayList<Enemy>> enemies = new ArrayList<ArrayList<Enemy>>();// 11x5
-		int xLoc = 1;
+	public Enemy[][] spawnEnemies() {
+		Enemy[][] enemies = new Enemy[5][11];// 11x5
+		int xLoc = 0;
 		int yLoc = 0;
 		int width = 40;
 		int height = width;
 
 		for (int row = 0; row < 5; row++) {
-			ArrayList<Enemy> newLine = new ArrayList<Enemy>(11);
 			for (int col = 0; col < 11; col++) {
-				newLine.add(new Enemy(xLoc, yLoc, width, height, row, col));
-				xLoc += width + 7;
-				// System.out.println(enemies.get());
+				enemies[row][col] = new Enemy(xLoc, yLoc, width, height, row, col);
+				xLoc += width + 8;
 			}
-			enemies.add(newLine);
-			yLoc += height + 7;
+			yLoc += height + 8;
 			xLoc = 1;
 		}
 		return enemies;
@@ -195,22 +210,12 @@ public class Game extends JPanel implements KeyListener {
 		boolean h2 = bb2[2] > bb1[0] && bb2[2] < bb1[2];
 		return (v1 || v2) && (h1 || h2);
 	}
-	
-	public void checkCover(){
-		for(int i = 0; i < covers.size(); i++){
-			if(covers.get(i).getHealth() <= 0){
-				covers.remove(i);	
+
+	public void checkCover() {
+		for (int i = 0; i < covers.size(); i++) {
+			if (covers.get(i).getHealth() <= 0) {
+				covers.remove(i);
 			}
-		}
-	}
-	
-	public void checkBullet(){
-		for(int i = 0; i < bullets.size(); i++){
-			int yValue = bullets.get(i).getY();
-			if(yValue <= 0 || yValue >= height){
-				bullets.remove(i);	
-			}
-			
 		}
 	}
 }

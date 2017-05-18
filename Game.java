@@ -52,6 +52,8 @@ public class Game extends JPanel implements KeyListener {
 					cover.act();
 				}
 				checkCover();
+				checkBullets();
+				
 				Thread.sleep(20);// pause for 200 milliseconds
 			} catch (InterruptedException ex) {
 			}

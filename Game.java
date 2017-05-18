@@ -102,8 +102,8 @@ public class Game extends JPanel implements KeyListener {
 		if (event.getKeyCode() == KeyEvent.VK_LEFT) {
 			player.moveLeft(true);
 		}
-		if(event.getkeyCode() == KeyEvent.VK_SPACE){
-			bullets.add(new Bullet(player.getX(), player.getY()-10, 90));	
+		if(event.getKeyCode() == KeyEvent.VK_SPACE){
+			bullets.add(new Bullet(player.getX()+19, player.getY()-17, 90));	
 		}
 
 	}

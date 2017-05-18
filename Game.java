@@ -198,4 +198,14 @@ public class Game extends JPanel implements KeyListener {
 			}
 		}
 	}
+	
+	public void checkBullet(){
+		for(int i = 0; i < bullets.size(); i++){
+			int yValue = bullets.get(i).getY();
+			if(yValue <= 0 || yValue >= height){
+				bullets.remove(i);	
+			}
+			
+		}
+	}
 }

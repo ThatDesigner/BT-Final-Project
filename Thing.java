@@ -76,6 +76,10 @@ public abstract class Thing {
 	public String getCommand() {
 		return command;
 	}
+	
+	public void setCommand(String c){
+		command = c;
+	}
 
 	public abstract void draw(Graphics page);
 

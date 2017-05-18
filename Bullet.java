@@ -4,15 +4,15 @@ public class Bullet extends Thing {
 	private int direction;
 	
 	public Bullet(int x, int y, int direction) {
-		super(x, y, 20, 10);
+		super(x, y, 10, 20);
 		this.direction = direction;
 	}
 
 	public void act() {
 		if (direction == 90)
-			super.changeY(-5);
+			super.changeY(-15);
 		else
-			super.changeY(5);
+			super.changeY(15);
 	}
 
 	public void draw(Graphics page) {

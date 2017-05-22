@@ -19,8 +19,8 @@ public class Enemy extends Thing {
 	}
 
 	public void act() {
-		System.out.println(getCommand());
-		int speed = 50;
+		//System.out.println(getCommand());
+		int speed = 20;
 		if (getCommand().equals("right"))
 			super.setVX(speed);
 		else if (getCommand().equals("left"))
